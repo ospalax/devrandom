@@ -67,7 +67,7 @@ def remove_dep(task_name, deps):
 
 def check_deps(task_name, tasks):
     for dep_name in tasks[task_name]['dependencies']:
-        if tasks[dep_name]['result'] == 'failed':
+        if tasks[dep_name]['result'] in ('failed', 'skipped'):
             return False
 
     return True
@@ -103,7 +103,7 @@ async def runner(task_name, tasks, deps):
         print(f"[!] Skipped task (failed deps.): {task_name}")
         tasks[task_name]['status'] = 'finished'
         tasks[task_name]['output'] = None
-        tasks[task_name]['result'] = 'failed'
+        tasks[task_name]['result'] = 'skipped'
 
     # remove yourself from active tasklist
     remove_dep(task_name, deps)

@@ -155,8 +155,11 @@ def get_deps(task_name, taskstruct, dep_list=set()):
         return dep_list
 
     for dep in taskstruct[task_name]['dependencies']:
+        if dep in dep_list:
+            continue
+
         dep_list.add(dep)
-        dep_list.union(get_deps(dep, taskstruct, dep_list))
+        get_deps(dep, taskstruct, dep_list)
 
     return dep_list
 
@@ -268,7 +271,6 @@ def main():
 
     print("\n---\n")
     report_summary(taskstruct, mytime)
-    #pprint(taskstruct)
 
     return 0
 

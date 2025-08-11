@@ -1,0 +1,56 @@
+{
+    "tasks":[
+        {
+            "name":"task1",
+            "type":"eval",
+            "arguments": "import time; print('task1'); time.sleep(1)"
+        },
+        {
+            "name":"task2",
+            "type":"eval",
+            "arguments": "import time; print('task2'); time.sleep(1)",
+            "dependencies": ["task3","task5"]
+        },
+        {
+            "name":"task3",
+            "type":"eval",
+            "arguments": "import time; print('task3'); time.sleep(1)",
+            "dependencies": ["task1"]
+        },
+        {
+            "name":"task4",
+            "type":"eval",
+            "arguments": "import time; print('task4'); time.sleep(1)"
+        },
+        {
+            "name":"task5",
+            "type":"eval",
+            "arguments": "import time; print('task5'); time.sleep(1); raise ValueError",
+            "dependencies": ["task4"]
+        },
+        {
+            "name":"task6",
+            "type":"eval",
+            "arguments": "import time; print('task6'); time.sleep(1)",
+            "dependencies": ["task5"]
+        },
+        {
+            "name":"task7",
+            "type":"eval",
+            "arguments": "import time; print('task7'); time.sleep(1)",
+            "dependencies": []
+        },
+        {
+            "name":"task8",
+            "type":"eval",
+            "arguments": "import time; print('task8'); time.sleep(1)",
+            "dependencies": ["task2"]
+        },
+        {
+            "name":"task9",
+            "type":"eval",
+            "arguments": "import time; print('task9'); time.sleep(1)",
+            "dependencies": ["task6", "task2"]
+        }
+    ]
+}
