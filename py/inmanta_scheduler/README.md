@@ -2,9 +2,9 @@
 
 Asynchronous scheduler of defined tasks
 
-## Synopsis
+## Synopsis (Goals)
 
-Small stand-alone program that can execute a set of tasks with a **maximal level of concurrency** while respecting the dependencies between the tasks. Tasks are defined inside a single JSON file passed as a command-line argument.
+Small stand-alone program that can execute a set of tasks with a **maximal level of concurrency** (hopefully) while respecting the dependencies between the tasks. Tasks are defined inside a single JSON file passed as a command-line argument.
 
 ## Notes / Requirements
 
@@ -14,12 +14,26 @@ The program uses [jsonschema](https://python-jsonschema.readthedocs.io/en/stable
 
 If run inside this directory:
 ```
-% python3 taskrunner.py "examples/input1.json"
+% python3 taskrunner.py -f "examples/input1.json"
 ```
 
 Generally:
 ```
-% python3 taskrunner.py [-s|--schema "schema.json"] <tasks1.json>...
+% python3 taskrunner.py -h
+usage: taskrunner.py [-h] [-v] [-s <schema-file>] -f <tasks-file> [<task name(s)> ...]
+
+Asynchronous Taskrunner
+
+positional arguments:
+  <task name(s)>        Explicit name of tasks to be run (dependencies will be added)
+
+options:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -s <schema-file>, --schema <schema-file>
+                        Schema filename and path (Default: schema.json)
+  -f <tasks-file>, --tasks-file <tasks-file>
+                        JSON filename and path with tasks
 ```
 
 ## Description
