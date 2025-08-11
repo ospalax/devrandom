@@ -49,6 +49,25 @@ async def shell_runner(task_name, tasks):
     return result, output
 
 
+def inplace_runner(task_name, tasks):
+    cmd = tasks[task_name]['arguments']
+
+    print(f'   >[{task_name}] running inplace python...')
+
+    result = 'ok'
+    output = ''
+    try:
+        output = exec(cmd)
+    except:
+        result = 'failed'
+
+
+    if output:
+        print(f'   >[{task_name}] OUTPUT:\n{output}')
+
+    return result, output
+
+
 def remove_dep(task_name, deps):
     for name in deps:
         deps[name].discard(task_name)
@@ -62,8 +81,16 @@ async def runner(task_name, tasks, deps):
 
     if tasks[task_name]['type'] == 'exec':
         result, output = await shell_runner(task_name, tasks)
+    elif tasks[task_name]['type'] == 'eval':
+        loop = asyncio.get_running_loop()
+        result, output = await loop.run_in_executor(None,
+                                            inplace_runner,
+                                            task_name,
+                                            tasks)
+        output = ''
     else:
-        # TODO: implement eval
+        print(f"[!] Unknown execution type: {tasks[task_name]['type']}")
+        print("[!] Invalid task execution type - ABORT")
         raise ValueError
 
     # experiments...
