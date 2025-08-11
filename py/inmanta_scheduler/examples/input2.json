@@ -1,0 +1,56 @@
+{
+    "tasks":[
+        {
+            "name":"task1",
+            "type":"exec",
+            "arguments": "echo task1; sleep 1"
+        },
+        {
+            "name":"task2",
+            "type":"exec",
+            "arguments": "echo task2; sleep 1",
+            "dependencies": ["task3","task5"]
+        },
+        {
+            "name":"task3",
+            "type":"exec",
+            "arguments": "echo task3; sleep 1",
+            "dependencies": ["task1"]
+        },
+        {
+            "name":"task4",
+            "type":"exec",
+            "arguments": "echo task4; sleep 1"
+        },
+        {
+            "name":"task5",
+            "type":"exec",
+            "arguments": "echo task5; sleep 1",
+            "dependencies": ["task4"]
+        },
+        {
+            "name":"task6",
+            "type":"exec",
+            "arguments": "echo task6; sleep 1",
+            "dependencies": ["task5"]
+        },
+        {
+            "name":"task7",
+            "type":"exec",
+            "arguments": "echo task7; sleep 1",
+            "dependencies": []
+        },
+        {
+            "name":"task8",
+            "type":"exec",
+            "arguments": "echo task8; sleep 1",
+            "dependencies": ["task2"]
+        },
+        {
+            "name":"task9",
+            "type":"eval",
+            "arguments": "echo task9; sleep 1",
+            "dependencies": ["task6", "task2"]
+        }
+    ]
+}

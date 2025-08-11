@@ -1,0 +1,13 @@
+# my backup files
+*~bak
+*bak~
+
+# Vi(m)'s swap files
+*.swp
+
+# desktop stuff
+.Trash-*
+
+# Python stuff
+__pycache__/
+*.pyc

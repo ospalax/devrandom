@@ -1,0 +1,16 @@
+{
+    "tasks":[
+        {
+            "name":"task wrong1",
+            "type":"run",
+            "arguments": "ls"
+        },
+        {
+            "name":"task wrong2",
+            "type":"eval",
+            "arguments": "import os; print(os.listdir())",
+            "dependencies": ["task3","task5"],
+            "counter": 1
+        }
+    ]
+}
