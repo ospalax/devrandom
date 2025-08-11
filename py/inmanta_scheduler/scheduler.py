@@ -2,16 +2,6 @@
 
 import asyncio
 import time
-from pprint import pprint
-
-from abc import ABC, abstractmethod
-
-class Scheduler(ABC):
-    pass
-
-class CustomSched1(Scheduler):
-    """ First attempt of a scheduler """
-    pass
 
 
 def all_tasks_done(tasks):
@@ -75,32 +65,45 @@ def remove_dep(task_name, deps):
     del deps[task_name]
 
 
+def check_deps(task_name, tasks):
+    for dep_name in tasks[task_name]['dependencies']:
+        if tasks[dep_name]['result'] == 'failed':
+            return False
+
+    return True
+
+
 async def runner(task_name, tasks, deps):
-    # TODO: check for result to skip
-    print(f"[+] Started task: {task_name}")
+    if check_deps(task_name, tasks):
+        print(f"[+] Started task: {task_name}")
 
-    if tasks[task_name]['type'] == 'exec':
-        result, output = await shell_runner(task_name, tasks)
-    elif tasks[task_name]['type'] == 'eval':
-        loop = asyncio.get_running_loop()
-        result, output = await loop.run_in_executor(None,
-                                            inplace_runner,
-                                            task_name,
-                                            tasks)
-        output = ''
+        if tasks[task_name]['type'] == 'exec':
+            result, output = await shell_runner(task_name, tasks)
+        elif tasks[task_name]['type'] == 'eval':
+            loop = asyncio.get_running_loop()
+            result, output = await loop.run_in_executor(None,
+                                                inplace_runner,
+                                                task_name,
+                                                tasks)
+            output = ''
+        else:
+            print(f"[!] Unknown execution type: {tasks[task_name]['type']}")
+            print("[!] Invalid task execution type - ABORT")
+            raise ValueError
+
+        # experiments...
+        #time.sleep(1)
+        #await asyncio.sleep(1)
+
+        print(f"[-] Ended task  : {task_name}")
+        tasks[task_name]['status'] = 'finished'
+        tasks[task_name]['output'] = output
+        tasks[task_name]['result'] = result
     else:
-        print(f"[!] Unknown execution type: {tasks[task_name]['type']}")
-        print("[!] Invalid task execution type - ABORT")
-        raise ValueError
-
-    # experiments...
-    #time.sleep(1)
-    #await asyncio.sleep(1)
-
-    print(f"[-] Ended task  : {task_name}")
-    tasks[task_name]['status'] = 'finished'
-    tasks[task_name]['output'] = output
-    tasks[task_name]['result'] = result
+        print(f"[!] Skipped task (failed deps.): {task_name}")
+        tasks[task_name]['status'] = 'finished'
+        tasks[task_name]['output'] = None
+        tasks[task_name]['result'] = 'failed'
 
     # remove yourself from active tasklist
     remove_dep(task_name, deps)

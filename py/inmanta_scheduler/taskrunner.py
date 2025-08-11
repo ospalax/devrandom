@@ -17,6 +17,7 @@ import argparse
 import json
 import time
 import asyncio
+import copy
 
 from jsonschema import validate as json_validate
 from jsonschema.exceptions import ValidationError
@@ -139,7 +140,7 @@ def create_structs(task_list):
             deps = set()
 
         taskstruct[name]['dependencies'] = deps
-        depstruct[name] = deps
+        depstruct[name] = copy.deepcopy(deps)
 
     return taskstruct, depstruct
 

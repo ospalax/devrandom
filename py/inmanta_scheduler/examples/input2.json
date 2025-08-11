@@ -48,7 +48,7 @@
         },
         {
             "name":"task9",
-            "type":"eval",
+            "type":"exec",
             "arguments": "echo task9; sleep 1",
             "dependencies": ["task6", "task2"]
         }
