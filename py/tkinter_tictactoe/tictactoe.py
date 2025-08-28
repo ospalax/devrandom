@@ -67,6 +67,7 @@ class Game(tk.Tk):
             for button in row:
                 button.config(text="")
         self.game_status.config(text=GAME_START)
+        self.game_status["fg"] = "black"
         self.game = self._start_game()
 
     def setup_gui(self):
@@ -186,9 +187,6 @@ class Game(tk.Tk):
                 else:
                     full_board = False
 
-        print("------")
-        print(player1)
-        print(player2)
         # quick and dirty...
         player1_completed = False
         player2_completed = False

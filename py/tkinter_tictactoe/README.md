@@ -8,6 +8,12 @@ There is no computer player and code is quick and dirty.
 
 Just playing with Tkinter library here.
 
+## Usage
+
+```
+python3 tictactoe.py
+```
+
 ## TODO
 
 - Add computer player...
