@@ -15,6 +15,7 @@ __author__ = "Petr Ospalý"
 import sys
 import csv
 from pprint import pprint as pp
+import itertools
 
 class Knapsack:
     """
@@ -75,6 +76,7 @@ class Knapsack:
         return sorted
 
     def print_sorted(self):
+        print("\n-- Sorted data:\n")
         for i, key in enumerate(self.sorted):
             print(f"{key}: ", end='')
             pp(self.data[self.sorted[i]])
@@ -90,6 +92,10 @@ class DirectSolver(Knapsack):
 
     (to mostly play with the problem)
     """
+
+    def __init__(self, filename, weight):
+        super().__init__(filename, weight)
+        self._all_candidates = {}
 
     def get_candidate(self, sorted=None):
         """
@@ -118,7 +124,105 @@ class DirectSolver(Knapsack):
 
         return candidate
 
-   #def
+    def find_all(self, descent_limit=None):
+        def add_candidate(new_candidate):
+            key = tuple(new_candidate['list'])
+            if key not in self._all_candidates:
+                self._all_candidates[key] = new_candidate
+
+        def get_next(last_candidate, last_sorted):
+            for s in generate_sorted(last_candidate, last_sorted):
+                if not s:
+                    break
+                new_candidate = self.get_candidate(s)
+                add_candidate(new_candidate)
+                #print("New sorted: ", end="");
+                #print(s)
+                #print("New candidate: ", end="");
+                #print(new_candidate)
+                get_next(new_candidate, s)
+
+        def get_exclusion_list(candidate):
+            """
+            This will return all subsets of the candidate list which
+            we then can extract from 'sorted' and look for new
+            candidates - this could be optimalized by reordering the
+            subsets to match candidate list and by going from back
+            we can skip first items in the sorted list...
+
+            I am using itertools.combinations for simplicity and
+            I will not be optimizing this further.
+            """
+            result = []
+
+            for i in range(1, len(candidate['list']) + 1):
+                result.extend(itertools.combinations(candidate['list'], i))
+
+            return result
+
+        def generate_sorted(candidate, sorted):
+            """
+            Generator for new sorted list where candidate items
+            are removed
+            """
+            exclusions = get_exclusion_list(candidate)
+
+            for excluded in exclusions:
+                new_sorted = [x for x in sorted if x not in excluded]
+                yield new_sorted
+
+
+        self._all_candidates = {}
+        self._descent = 0
+
+        # adding the best candidate first
+        first = self.get_candidate()
+        add_candidate(first)
+
+        # now descent to find every other
+        get_next(first, self.sorted)
+
+    def get_top_ten(self):
+        if not self._all_candidates:
+            self.find_all()
+
+        topten = []
+        control = {}
+        for i in range(10):
+            maxkey = None
+            maxvalue = 0
+            for key, candidate in self._all_candidates.items():
+                if key in control:
+                    continue
+
+                if candidate['value'] >= maxvalue:
+                    maxkey = key
+                    maxvalue = candidate['value']
+
+            control[maxkey] = maxvalue
+            topten.append(self._all_candidates[maxkey])
+
+        return topten
+
+
+
+    def print_all(self):
+        if not self._all_candidates:
+            self.find_all()
+
+        print("\n-- All candidates:\n")
+        for i in self._all_candidates:
+            pp(i)
+
+    def print_top_ten(self):
+        if not self._all_candidates:
+            self.find_all()
+
+        print("\n-- Top ten candidates:\n")
+        for i in self.get_top_ten():
+            pp(i)
+
+
 
 #
 # main
@@ -127,8 +231,12 @@ class DirectSolver(Knapsack):
 def main():
     knapsack = DirectSolver('data.csv', 50)
 
+    # TODO: just to make things faster and easier while deving
+    knapsack.sorted = knapsack.sorted[:15]
+
     knapsack.print_sorted()
-    knapsack.print_candidate(knapsack.get_candidate())
+    knapsack.print_all()
+    knapsack.print_top_ten()
     return 0
 
 if __name__ == "__main__":
