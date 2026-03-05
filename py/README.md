@@ -1,11 +1,15 @@
 # Python randoms
 
-Here are random problems solved in python - none of these are canonical nor pythonic and I don't try to make them look and feel upto to the latest standards or fads.
+Here are random problems solved in python - none of these implementations are canonical nor pythonic and I don't try to make them look and feel that way (also I am not a fan of ZOO of classes - sorry).
 
-I am not python guru - python for me is a prototyping language - flexible calculator and tool to hack quick and dirty solutions.
+I am not python enthusiast - python for me is a good prototyping language, flexible calculator and convenient tool to hack quick and dirty solutions.
 
-**If you want type annotations (which enforce nothing anyway) then you picked wrong language...**
+Python was always dynamic interpreted language for scripting.
 
-Python is dynamic interpreted language which became overused in places where it does not belong (it is not typed, not fast, not very well designed and lately burdened by churned out features on top without polish...like async stuff - and how many ways you can format strings now?).
+I will not bother with type annotations in these programs because they are **unenforcable** documentation only.
 
-Pick the right tool for the job...
+If you want/need type safety then python is probably not a good choice for your project...
+
+*(and it is very slooooooow...)*
+
+**Pick the right tool for the job...**

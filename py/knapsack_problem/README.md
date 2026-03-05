@@ -4,14 +4,15 @@
 
 There are items in the `data.csv` each with value and weight. The problem is to
 put as much items as possible without crossing the limit - a maximum weight of
-the knapsack (parameter of the problem). We are looking for a set of items
-which has the highest sum of their values while being under the constraint of
-the maximum weight.
+the knapsack (parameter of the problem).
+
+We are looking for a set of items which has the highest sum of their values
+while being under the constraint of the maximum weight.
 
 ## DirectSolver
 
 Firstly I made the obvious, intuitive and straightforward solution to the
-problem.
+problem using the recursion and traversing all possible variants.
 
 Data are sorted by ratio - (value/weight) - this way we get the best chance to
 find the best candidate or its approximation very quickly.
@@ -20,8 +21,8 @@ We start with the obvious first candidate and then we create all possible
 subsets of the candidate list which we then remove from the sorted list and we
 look for an alternative.
 
-(There is room for improvement by skipping some comparisons - but for this toy
-problem I decided to keep it simple as possible...)
+*(There is room for improvement by skipping some comparisons - but for this toy
+problem I decided to keep it simple as possible...)*
 
 This we do for all possible combinations.
 
@@ -72,29 +73,8 @@ user	3m26.543s
 sys	0m0.185s
 ```
 
-If we utilize descent limit (let's say 10) then we get (the same result but in
-under minute on the same machine):
-
-```
--- Top ten candidates:
-
-{'list': ['S', 'A', 'P', 'N', 'J', 'K', 'B', 'F'], 'weight': 150, 'value': 68200}
-{'list': ['S', 'P', 'N', 'J', 'K', 'E', 'B'], 'weight': 150, 'value': 68200}
-{'list': ['S', 'A', 'P', 'N', 'J', 'K', 'E'], 'weight': 143, 'value': 67500}
-{'list': ['S', 'A', 'P', 'N', 'J', 'K', 'B', 'Q'], 'weight': 148, 'value': 67450}
-{'list': ['S', 'A', 'P', 'N', 'J', 'K', 'B', 'C'], 'weight': 148, 'value': 67300}
-{'list': ['S', 'A', 'P', 'N', 'K', 'E', 'B'], 'weight': 145, 'value': 67200}
-{'list': ['S', 'A', 'P', 'N', 'J', 'K', 'B', 'H'], 'weight': 149, 'value': 67050}
-{'list': ['S', 'P', 'N', 'J', 'K', 'E', 'F'], 'weight': 148, 'value': 67000}
-{'list': ['S', 'A', 'P', 'N', 'J', 'K', 'T'], 'weight': 146, 'value': 66800}
-{'list': ['S', 'P', 'N', 'K', 'E', 'B', 'F'], 'weight': 150, 'value': 66700}
-
-real	0m40.847s
-user	0m40.609s
-sys	0m0.118s
-```
-
-With descent limit of 5 - same result in fraction of a second:
+If we utilize **descent limit** (let's say 5) then we get the same result but
+in a fraction of a second on the same machine:
 
 ```
 -- Top ten candidates:
@@ -116,14 +96,17 @@ sys	0m0.015s
 ```
 
 **NOTE**: I did not extensively tested or verified the result - so there might
-be an isssue with my algorithm and the best solution is missed but so far: LGTM
+be an isssue with my algorithm and the best solution is missed but so far:
+**LGTM** :)
 
 ## GeneticSolver
 
 Without writing a single line of code: I am judging that **this is not good
 match**.
 
-The previous brute exhaustive approach is better - it will find the right
-answer and it will be more efficient and faster.
+*The previous brute exhaustive approach is better - it will find the right
+answer and it will be more efficient and faster.*
+
+With that said...
 
 
