@@ -93,9 +93,11 @@ class DirectSolver(Knapsack):
     (to mostly play with the problem)
     """
 
-    def __init__(self, filename, weight):
+    def __init__(self, filename, weight, descent_limit=None):
         super().__init__(filename, weight)
+        self.descent_limit = descent_limit
         self._all_candidates = {}
+        self._seen_candidates = {}
 
     def get_candidate(self, sorted=None):
         """
@@ -130,17 +132,39 @@ class DirectSolver(Knapsack):
             if key not in self._all_candidates:
                 self._all_candidates[key] = new_candidate
 
-        def get_next(last_candidate, last_sorted):
+            return key
+
+        def get_next(last_candidate, last_sorted, descent_counter):
+            if descent_counter is not None:
+                if descent_counter <= 0:
+                    return False;
+                else:
+                    descent_counter -= 1
+
             for s in generate_sorted(last_candidate, last_sorted):
                 if not s:
                     break
                 new_candidate = self.get_candidate(s)
-                add_candidate(new_candidate)
+
+                c_key = add_candidate(new_candidate)
+                s_key = tuple(s)
+                seen = (c_key, s_key)
+                if seen in self._seen_candidates:
+                    # we already did this combo
+                    continue
+
+                self._seen_candidates[seen] = True
+
                 #print("New sorted: ", end="");
                 #print(s)
                 #print("New candidate: ", end="");
                 #print(new_candidate)
-                get_next(new_candidate, s)
+                #print("Counter: ", descent_counter)
+                if not get_next(new_candidate, s, descent_counter):
+                    break
+                #print(" -- END -- ")
+
+            return True
 
         def get_exclusion_list(candidate):
             """
@@ -173,14 +197,19 @@ class DirectSolver(Knapsack):
 
 
         self._all_candidates = {}
-        self._descent = 0
+        self._seen_candidates = {}
+
+        if descent_limit:
+            self._descent = descent_limit
+        else:
+            self._descent = self.descent_limit
 
         # adding the best candidate first
         first = self.get_candidate()
         add_candidate(first)
 
         # now descent to find every other
-        get_next(first, self.sorted)
+        get_next(first, self.sorted, self._descent)
 
     def get_top_ten(self):
         if not self._all_candidates:
@@ -199,6 +228,9 @@ class DirectSolver(Knapsack):
                     maxkey = key
                     maxvalue = candidate['value']
 
+            if maxkey is None:
+                break
+
             control[maxkey] = maxvalue
             topten.append(self._all_candidates[maxkey])
 
@@ -212,7 +244,7 @@ class DirectSolver(Knapsack):
 
         print("\n-- All candidates:\n")
         for i in self._all_candidates:
-            pp(i)
+            print(i)
 
     def print_top_ten(self):
         if not self._all_candidates:
@@ -220,7 +252,7 @@ class DirectSolver(Knapsack):
 
         print("\n-- Top ten candidates:\n")
         for i in self.get_top_ten():
-            pp(i)
+            print(i)
 
 
 
@@ -229,14 +261,16 @@ class DirectSolver(Knapsack):
 #
 
 def main():
-    knapsack = DirectSolver('data.csv', 50)
-
     # TODO: just to make things faster and easier while deving
-    knapsack.sorted = knapsack.sorted[:15]
+    #knapsack.sorted = knapsack.sorted[:5]
+
+    knapsack = DirectSolver('data.csv', 150, 5)
+    #knapsack = DirectSolver('data.csv', 150)
 
     knapsack.print_sorted()
-    knapsack.print_all()
+    #knapsack.print_all()
     knapsack.print_top_ten()
+
     return 0
 
 if __name__ == "__main__":
