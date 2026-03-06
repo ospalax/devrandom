@@ -113,8 +113,16 @@ Here is a sample of first five iterations (generations):
 
 ```
 % time python3 knapsack.py
+[#] Knapsack Problem Solver [#]
+ 1. DirectSolver
+ 2. BetterSolver
+ 3. GeneticSolver
+#> Select Knapsack solver (1-3): 3
+#> What is the maximum weight (integer): 150
+#> What is the iteration limit (integer): 5
+#> What is the value threshold (integer): 0
 
--- Current population (iteration: 0/100):
+-- Current population (iteration: 0/5):
 
 {'list': ['A'], 'value': 2500, 'weight': 5}
 {'list': ['B'], 'value': 3200, 'weight': 12}
@@ -137,77 +145,74 @@ Here is a sample of first five iterations (generations):
 {'list': ['S'], 'value': 26000, 'weight': 32}
 {'list': ['T'], 'value': 3800, 'weight': 18}
 
--- Current population (iteration: 1/100):
+-- Current population (iteration: 1/5):
 
 {'list': ['Q', 'I'], 'value': 2450, 'weight': 19, 'ratio': 128.94736842105263}
-{'list': ['F', 'A'], 'value': 4500, 'weight': 15, 'ratio': 300.0}
+{'list': ['A', 'F'], 'value': 4500, 'weight': 15, 'ratio': 300.0}
 {'list': ['L', 'B'], 'value': 6400, 'weight': 38, 'ratio': 168.42105263157896}
 {'list': ['J', 'T'], 'value': 7300, 'weight': 28, 'ratio': 260.7142857142857}
 {'list': ['R', 'E'], 'value': 8700, 'weight': 43, 'ratio': 202.32558139534885}
-{'list': ['G', 'O'], 'value': 10000, 'weight': 55, 'ratio': 181.8181818181818}
-{'list': ['D', 'P'], 'value': 16000, 'weight': 49, 'ratio': 326.53061224489795}
-{'list': ['K', 'N'], 'value': 24500, 'weight': 67, 'ratio': 365.67164179104475}
+{'list': ['O', 'G'], 'value': 10000, 'weight': 55, 'ratio': 181.8181818181818}
+{'list': ['P', 'D'], 'value': 16000, 'weight': 49, 'ratio': 326.53061224489795}
+{'list': ['N', 'K'], 'value': 24500, 'weight': 67, 'ratio': 365.67164179104475}
 {'list': ['S'], 'value': 26000, 'weight': 32}
 {'list': ['C', 'M', 'H'], 'value': 3050, 'weight': 31, 'ratio': 98.38709677419355}
 
--- Current population (iteration: 2/100):
+-- Current population (iteration: 2/5):
 
-{'list': ['R', 'E', 'G', 'O'], 'value': 18700, 'weight': 98, 'ratio': 190.81632653061226}
-{'list': ['K', 'N', 'D', 'P'], 'value': 40500, 'weight': 116, 'ratio': 349.13793103448273}
+{'list': ['R', 'E', 'O', 'G'], 'value': 18700, 'weight': 98, 'ratio': 190.81632653061226}
+{'list': ['P', 'N', 'D', 'K'], 'value': 40500, 'weight': 116, 'ratio': 349.13793103448273}
 {'list': ['S'], 'value': 26000, 'weight': 32}
-{'list': ['A', 'F', 'H', 'C', 'M', 'Q'], 'value': 8800, 'weight': 54, 'ratio': 162.96296296296296}
-{'list': ['J', 'L', 'T', 'B', 'I'], 'value': 14900, 'weight': 77, 'ratio': 193.5064935064935}
+{'list': ['M', 'A', 'F', 'H', 'C', 'Q'], 'value': 8800, 'weight': 54, 'ratio': 162.96296296296296}
+{'list': ['L', 'B', 'J', 'T', 'I'], 'value': 14900, 'weight': 77, 'ratio': 193.5064935064935}
 
--- Current population (iteration: 3/100):
+-- Current population (iteration: 3/5):
 
-{'list': ['S', 'A'], 'value': 28500, 'weight': 37, 'ratio': 770.2702702702703}
-{'list': ['J', 'N', 'G', 'O', 'F'], 'value': 18700, 'weight': 101, 'ratio': 185.14851485148515}
-{'list': ['T', 'P', 'B', 'R', 'E', 'Q'], 'value': 18150, 'weight': 92, 'ratio': 197.2826086956522}
-{'list': ['J', 'N', 'G', 'O', 'H'], 'value': 23850, 'weight': 96, 'ratio': 248.4375}
-{'list': ['T', 'B', 'R', 'E', 'P', 'C'], 'value': 23300, 'weight': 95, 'ratio': 245.26315789473685}
-{'list': ['K', 'N', 'D', 'P', 'M'], 'value': 41600, 'weight': 130, 'ratio': 320.0}
+{'list': ['S', 'M'], 'value': 27100, 'weight': 46, 'ratio': 589.1304347826087}
+{'list': ['L', 'B', 'L', 'G', 'A'], 'value': 18900, 'weight': 98, 'ratio': 192.85714285714286}
+{'list': ['R', 'E', 'I', 'L', 'T', 'F'], 'value': 19200, 'weight': 92, 'ratio': 208.69565217391303}
+{'list': ['L', 'B', 'G', 'Q'], 'value': 13150, 'weight': 71, 'ratio': 185.2112676056338}
+{'list': ['R', 'E', 'I', 'L', 'T', 'H'], 'value': 17750, 'weight': 107, 'ratio': 165.88785046728972}
+{'list': ['P', 'N', 'D', 'K', 'C'], 'value': 41600, 'weight': 124, 'ratio': 335.48387096774195}
 
--- Current population (iteration: 4/100):
+-- Current population (iteration: 4/5):
 
-{'list': ['N', 'D', 'C', 'E', 'P'], 'value': 31100, 'weight': 94, 'ratio': 330.8510638297872}
-{'list': ['T', 'O', 'G', 'F', 'R'], 'value': 20000, 'weight': 111, 'ratio': 180.18018018018017}
-{'list': ['J', 'N', 'D', 'P', 'N'], 'value': 30100, 'weight': 95, 'ratio': 316.8421052631579}
-{'list': ['O', 'S', 'G', 'H', 'K'], 'value': 35350, 'weight': 131, 'ratio': 269.8473282442748}
-{'list': ['J', 'N', 'D', 'P'], 'value': 29000, 'weight': 81, 'ratio': 358.0246913580247}
-{'list': ['O', 'S', 'G', 'H', 'K'], 'value': 51850, 'weight': 141, 'ratio': 367.7304964539007}
-{'list': ['S', 'A', 'L'], 'value': 31700, 'weight': 63, 'ratio': 503.1746031746032}
-{'list': ['D', 'N', 'C', 'E', 'P', 'Q'], 'value': 26350, 'weight': 77, 'ratio': 342.2077922077922}
-{'list': ['T', 'O', 'G', 'R', 'F', 'R', 'I'], 'value': 24400, 'weight': 134, 'ratio': 182.08955223880596}
+{'list': ['R', 'E', 'I', 'L', 'G', 'S'], 'value': 44600, 'weight': 137, 'ratio': 325.54744525547443}
+{'list': ['B', 'S', 'T', 'H'], 'value': 33850, 'weight': 71, 'ratio': 476.76056338028167}
+{'list': ['R', 'E', 'K', 'I', 'C', 'I'], 'value': 35500, 'weight': 142, 'ratio': 250.0}
+{'list': ['P', 'L', 'F', 'N', 'P'], 'value': 25000, 'weight': 90, 'ratio': 277.77777777777777}
+{'list': ['R', 'E', 'K', 'I', 'C'], 'value': 26000, 'weight': 107, 'ratio': 242.99065420560748}
+{'list': ['P', 'L', 'F', 'N'], 'value': 21200, 'weight': 72, 'ratio': 294.44444444444446}
+{'list': ['S', 'M', 'J'], 'value': 30600, 'weight': 56, 'ratio': 546.4285714285714}
+{'list': ['R', 'E', 'I', 'L', 'S', 'G', 'Q'], 'value': 22350, 'weight': 118, 'ratio': 189.40677966101694}
+{'list': ['S', 'B', 'T', 'H', 'O'], 'value': 15550, 'weight': 95, 'ratio': 163.68421052631578}
 
--- Current population (iteration: 5/100):
+-- Current population (iteration: 5/5):
 
-{'list': ['S', 'A', 'L'], 'value': 31700, 'weight': 63, 'ratio': 503.1746031746032}
-{'list': ['T', 'O', 'G', 'B', 'E', 'P'], 'value': 26050, 'weight': 110, 'ratio': 236.8181818181818}
-{'list': ['I', 'N', 'F', 'D', 'E', 'C'], 'value': 27500, 'weight': 114, 'ratio': 241.2280701754386}
-{'list': ['T', 'O', 'G', 'B', 'E', 'P'], 'value': 28000, 'weight': 114, 'ratio': 245.6140350877193}
-{'list': ['I', 'N', 'F', 'D', 'C', 'E'], 'value': 27800, 'weight': 101, 'ratio': 275.2475247524753}
-{'list': ['J', 'N', 'D', 'P', 'R'], 'value': 30100, 'weight': 95, 'ratio': 316.8421052631579}
-{'list': ['J', 'N', 'D', 'A'], 'value': 29000, 'weight': 81, 'ratio': 358.0246913580247}
-{'list': ['J', 'N', 'D', 'R', 'P'], 'value': 33200, 'weight': 109, 'ratio': 304.58715596330273}
-{'list': ['J', 'N', 'A', 'D'], 'value': 25000, 'weight': 72, 'ratio': 347.22222222222223}
-{'list': ['N', 'P', 'D', 'H', 'K'], 'value': 40350, 'weight': 136, 'ratio': 296.69117647058823}
-{'list': ['O', 'N', 'C', 'E', 'P'], 'value': 26100, 'weight': 89, 'ratio': 293.2584269662921}
-{'list': ['N', 'D', 'H', 'K', 'P'], 'value': 41350, 'weight': 125, 'ratio': 330.8}
-{'list': ['O', 'S', 'G', 'H', 'K'], 'value': 51850, 'weight': 141, 'ratio': 367.7304964539007}
+{'list': ['R', 'K', 'I', 'F', 'N', 'T'], 'value': 25200, 'weight': 104, 'ratio': 242.30769230769232}
+{'list': ['P', 'L', 'Q', 'G', 'B'], 'value': 42450, 'weight': 105, 'ratio': 404.2857142857143}
+{'list': ['R', 'K', 'I', 'F', 'N', 'T'], 'value': 35700, 'weight': 134, 'ratio': 266.4179104477612}
+{'list': ['P', 'L', 'Q', 'G', 'B'], 'value': 19650, 'weight': 85, 'ratio': 231.1764705882353}
+{'list': ['R', 'P', 'I', 'C', 'D'], 'value': 20500, 'weight': 97, 'ratio': 211.340206185567}
+{'list': ['R', 'E', 'K', 'I', 'C'], 'value': 26000, 'weight': 107, 'ratio': 242.99065420560748}
+{'list': ['R', 'I', 'P', 'C', 'D'], 'value': 22500, 'weight': 96, 'ratio': 234.375}
+{'list': ['R', 'E', 'I', 'L', 'G', 'S'], 'value': 44600, 'weight': 137, 'ratio': 325.54744525547443}
+{'list': ['M', 'P', 'L', 'F', 'J', 'N', 'S', 'A'], 'value': 54300, 'weight': 133, 'ratio': 408.2706766917293}
+{'list': ['B', 'S', 'T', 'H', 'O'], 'value': 38350, 'weight': 101, 'ratio': 379.7029702970297}
 
 -- Terminating condition met:
-   iterations: 5/100
+   iterations: 5/5
    threshold:  None
 
 -- Candidate:
 
-{'list': ['O', 'S', 'G', 'H', 'K'],
- 'ratio': 367.7304964539007,
- 'value': 51850,
- 'weight': 141}
+{'list': ['M', 'P', 'L', 'F', 'J', 'N', 'S', 'A'],
+ 'ratio': 408.2706766917293,
+ 'value': 54300,
+ 'weight': 133}
 
-real	0m0.032s
-user	0m0.025s
-sys	0m0.007s
+real	0m11.143s
+user	0m0.022s
+sys	0m0.010s
 ```
 
