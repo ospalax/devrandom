@@ -9,6 +9,24 @@ the knapsack (parameter of the problem).
 We are looking for a set of items which has the highest sum of their values
 while being under the constraint of the maximum weight.
 
+## Usage
+
+Run the `knapsack.py` like below and pick the solver you want:
+
+```
+% python3 knapsack.py
+[#] Knapsack Problem Solver [#]
+ 1. DirectSolver
+ 2. BetterSolver
+ 3. GeneticSolver
+#> Select Knapsack solver (1-3): 1
+#> What is the maximum weight (integer): 150
+#> What is the iteration limit (integer): 5
+```
+
+**NOTE**: for `DirectSolver` use low iteration number (<10) or you might need
+to wait few minutes (cca 4-5 mins)...
+
 ## DirectSolver
 
 Firstly I made the obvious, intuitive and straightforward solution to the
@@ -30,8 +48,6 @@ With the provided data we get the top ten candidates on **my machine** under 4
 minutes:
 
 ```
-% time python3 knapsack.py
-
 -- Sorted data:
 
 S: {'ratio': 812.5, 'value': 26000, 'weight': 32}
@@ -98,6 +114,53 @@ sys	0m0.015s
 **NOTE**: I did not extensively tested or verified the result - so there might
 be an isssue with my algorithm and the best solution is missed but so far:
 **LGTM** :)
+
+---
+
+## BetterSolver
+
+While writing docstring on **GeneticSolver** I realized that I can fully
+utilize itertools to give me all combinations at once (for 20 items it is quite
+quick) and then just evaluate them and get the top ten again much simply....
+
+Because we can have exactly 0 or 1 of the particular item then the
+biggest candidate can be at most length of the all items.
+
+So for 20 items we can have: 20 long (all items), 19 long, 18 long etc.
+
+We will use itertools to get all combinations and we weed out those
+which are violating the weight limit.
+
+Then we just evaluate each valid candidate and get the highest...
+
+```
+% time python3 knapsack.py
+[#] Knapsack Problem Solver [#]
+ 1. DirectSolver
+ 2. BetterSolver
+ 3. GeneticSolver
+#> Select Knapsack solver (1-3): 2
+#> What is the maximum weight (integer): 150
+
+-- Top ten candidates:
+
+{'list': ('S', 'A', 'P', 'N', 'J', 'K', 'B', 'F'), 'weight': 150, 'value': 68200, 'ratio': 454.6666666666667}
+{'list': ('S', 'P', 'N', 'J', 'K', 'E', 'B'), 'weight': 150, 'value': 68200, 'ratio': 454.6666666666667}
+{'list': ('S', 'A', 'P', 'N', 'J', 'K', 'E'), 'weight': 143, 'value': 67500, 'ratio': 472.02797202797206}
+{'list': ('S', 'A', 'P', 'N', 'J', 'K', 'B', 'Q'), 'weight': 148, 'value': 67450, 'ratio': 455.7432432432432}
+{'list': ('S', 'A', 'P', 'N', 'J', 'K', 'B', 'C'), 'weight': 148, 'value': 67300, 'ratio': 454.72972972972974}
+{'list': ('S', 'A', 'P', 'N', 'K', 'E', 'B'), 'weight': 145, 'value': 67200, 'ratio': 463.44827586206895}
+{'list': ('S', 'A', 'P', 'N', 'J', 'K', 'B', 'H'), 'weight': 149, 'value': 67050, 'ratio': 450.0}
+{'list': ('S', 'P', 'N', 'J', 'K', 'E', 'F'), 'weight': 148, 'value': 67000, 'ratio': 452.7027027027027}
+{'list': ('S', 'A', 'P', 'N', 'J', 'K', 'T'), 'weight': 146, 'value': 66800, 'ratio': 457.5342465753425}
+{'list': ('S', 'P', 'N', 'K', 'E', 'B', 'F'), 'weight': 150, 'value': 66700, 'ratio': 444.6666666666667}
+
+real	0m5.013s
+user	0m1.963s
+sys	0m0.141s
+```
+
+---
 
 ## GeneticSolver
 
@@ -215,4 +278,77 @@ real	0m11.143s
 user	0m0.022s
 sys	0m0.010s
 ```
+
+This solver will work in iterations by maintaining healthy population
+of valid candidates with a goal to raise their individual value every
+time.
+
+It will not exhaustively explore solution space... just by the fact how genetic
+algorithms work - they are non-deterministic, inefficient and they will not
+cover every possible variation as previous solvers would.
+
+The solver works as so:
+
+ 1. make initial population:
+
+    (I cannot create all combinations of the items here because there would
+    be no longer any point to do any kind of genetic iteration...)
+
+    Start with singletons.
+
+    Put all valid singletons in reserve - we will reach here from time to
+    time to not lose some items over iterations.
+
+ 2. evaluation:
+
+    Calculate value and weight for each specimen and sort them.
+
+    We might have high value specimen which will be over weight limit, that
+    specimen will not count towards the threshold.
+
+    Here we set some threshold to end the iterations.
+
+ 3. select the next population:
+
+    This is a phase where it seems good to weed out overweight specimen
+    but I am guessing that with that approach we would never get close to
+    optimal candidate. Because any tiny amount over limit would remove it
+    from population... and we would get stuck only with subpar candidates.
+
+    Therefore we will keep overweight specimen and only try to fix them
+    in crossover and mutation stages...
+
+    But to not just get heavier and heavier specimens - we will select
+    overweight limit - that will be the weight of the most heavy item.
+
+    Weed out anything heavier than that.
+
+    Lastly select top half of the population (highest values).
+
+ 4. crossover:
+
+    If specimen weight is less than half of limit then just pair it with
+    another specimen of similar weight.
+
+    Otherwise find two specimen which cannot be paired and only crossover
+    half of their items e.g.:
+
+        Specimen 1: A P N J K B -> A P N.....J K B
+        Specimen 2: S A P N Q   -> S A P.....N Q
+
+        watch out for duplicates...use set:
+
+        Child 1: A P N Q
+        Child 2: S A P J K B
+
+    To increase population at this stage we introduce sibling for each
+    offspring - this way population multiply until it reaches certain
+    threshold when it will be culled (halfed) and cycle will repeat.
+
+ 5. mutation:
+
+    If some item is missing in the population then put them to random
+    specimen as singletons from reserve.
+
+Go back to point 2.
 

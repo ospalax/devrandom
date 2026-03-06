@@ -249,8 +249,7 @@ class DirectSolver(Knapsack):
             print(i)
 
 
-# TODO:
-class BetterSolver(Knapsack):
+class BetterSolver(DirectSolver):
     """
     While writing docstring on GeneticSolver I realized that I can fully
     utilize itertools to give me all combinations at once (for 20 items it is
@@ -267,8 +266,46 @@ class BetterSolver(Knapsack):
 
     Then we just evaluate each valid candidate and get the highest...
     """
-    pass
 
+    def __init__(self, filename, weight):
+        super().__init__(filename, weight)
+
+    def find_all(self):
+        def calc_values(item_list):
+            value = 0
+            weight = 0
+
+            for i in item_list:
+                value += self.data[i]['value']
+                weight += self.data[i]['weight']
+
+            ratio = value / weight
+
+            return value, weight, ratio
+
+        def return_all_subsets():
+            all_items = []
+            for key in self.sorted:
+                all_items.append(key)
+
+            all_sets = set()
+            for i in range(1, len(all_items) + 1):
+                for subset in itertools.combinations(all_items, i):
+                    all_sets.add(subset)
+
+            for group in all_sets:
+                value, weight, ratio = calc_values(group)
+                if weight > self.maxweight:
+                    continue
+
+                candidate = {}
+                candidate['list'] = group
+                candidate['weight'] = weight
+                candidate['value'] = value
+                candidate['ratio'] = value / weight
+                self._all_candidates[tuple(group)] = candidate
+
+        return_all_subsets()
 
 class GeneticSolver(Knapsack):
     """
@@ -284,9 +321,10 @@ class GeneticSolver(Knapsack):
     of valid candidates with a goal to raise their individual value every
     time.
 
-    This solver will not exhaustively explore solution space... just on the
-    fact how genetic algorithms work - they are non-deterministic, inefficient
-    and they will not cover every possible variation as previous solvers would.
+    It will not exhaustively explore solution space... just by the fact
+    how genetic algorithms work - they are non-deterministic, inefficient
+    and they will not cover every possible variation as previous solvers
+    would.
 
     The solver works as so:
 
@@ -674,20 +712,6 @@ def ask_integer(prompt):
     return r
 
 def main():
-#    knapsack = DirectSolver('data.csv', 150, 5)
-#    #knapsack = DirectSolver('data.csv', 150)
-#
-#    knapsack.print_sorted()
-#    #knapsack.print_all()
-#    knapsack.print_top_ten()
-#
-#    print("------------------------------------------------------------------")
-#    print("------------------------------------------------------------------")
-#    print("------------------------------------------------------------------")
-
-    #knapsack = GeneticSolver('data.csv', 150, 100)
-    #knapsack.iterate_generations(printing=True, iterations=5)
-
     print("[#] Knapsack Problem Solver [#]")
     print(" 1. DirectSolver")
     print(" 2. BetterSolver")
@@ -716,7 +740,10 @@ def main():
             knapsack.print_top_ten()
         case 2:
             # BetterSolver
-            print("TODO")
+            maxweight = ask_integer("#> What is the maximum weight (integer): ")
+            knapsack = BetterSolver('data.csv', maxweight)
+            #knapsack.sorted = knapsack.sorted[:5]
+            knapsack.print_top_ten()
         case 3:
             # GeneticSolver
             maxweight = ask_integer("#> What is the maximum weight (integer): ")
